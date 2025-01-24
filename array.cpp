@@ -61,6 +61,7 @@ int main() {
 
             if (!found) {
                 cout << "Name not found in the list. Please try again." << endl;
+                cout<<"Try again";
             }
         }
     }
