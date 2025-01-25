@@ -6,43 +6,26 @@ using namespace std;
 
 int main() {
     // Step 1: Define the original array with a fixed size
-    const int MAX_SIZE = 10; // Maximum size of the static array
-    string array1[MAX_SIZE] = {"tapuu", "sangu", "riyo", "sulav"}; // Initialize array with 4 elements
-    int array_size = 4; // Current number of elements in the array
+    int maz_size =20;
+    string cars[maz_size]  {"Lambo","oudi","Bmw","Ford","Marcedies","austin martin"};
 
-    int current_size=0;
-    for(int i =0 ;i<MAX_SIZE;i++){
-        if(!array1[i].empty()){
-            current_size++;
+    //if now current size is given we need to do;
+
+    int curren_sizze = sizeof(cars)/sizeof(cars[0]);
+    cout<<"this is the current size of array : "<<curren_sizze<<endl;
+
+    int cur_size= 0;
+    for(int i=0;cur_size<maz_size;i++){
+        if(!cars[i].empty()){
+            cur_size++;
         }else{
             break;
         }
-        
+    
     }
-    cout<<current_size<<endl;
-
-    // Step 2: Print the original array
-    cout << "Original array: ";
-    for (int i = 0; i < array_size; i++) {
-        cout << array1[i] << " ";
-    }
-    cout << endl;
-
-    // Step 3: Add a new element to the array
-    if (array_size < MAX_SIZE) { // Check if there's space in the array
-        array1[array_size] = "arayn"; // Add the new element
-        array_size++; // Increase the size of the array
-    } else {
-        cout << "Array is full, cannot add more elements!" << endl;
-    }
-
-    // Step 4: Print the updated array
-    cout << "Updated array: ";
-    for (int i = 0; i < array_size; i++) {
-        cout << array1[i] << " ";
-    }
-    cout << endl;
-
-    return 0;
+    cout<<cur_size;
 }
+
+
+
 
