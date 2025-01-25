@@ -9,14 +9,15 @@ using namespace std;
 int main() {
     // Step 1: Define the original array with a fixed size
     int maz_size =20;
-    string cars[maz_size]  {"Lambo","oudi","Bmw","Ford","Marcedies","austin martin"};
+    string cars[maz_size]  {"Lambo","oudi","Bmw","Ford","Marcedies","austin martin","oldmobile"};
     string description [maz_size] {
         "An Italian luxury sports car manufacturer renowned for its bold designs, high-performance engines, and exclusivity",
         "A German automaker known for its luxury vehicles and cutting-edge technology",
         "BMW, short for Bayerische Motoren Werke, is a German luxury car brand known for performance and innovation",
         "An iconic American automaker recognized for its reliable trucks, sedans, and pioneering assembly line production",
         "A German luxury car brand renowned for elegance and advanced engineering",
-        "A British luxury carmaker famous for its association with James Bond films"
+        "A British luxury carmaker famous for its association with James Bond films",
+        "This the old car and very special car with good design"
     };
     
     
@@ -102,6 +103,7 @@ int main() {
                     cout<<"******************************************************************************************************************"<<endl;
                     cout<<"*****************************************************"<<cars[i]<<"************************************************"<<endl;
                     cout<<"-:"<<description[i]<<endl;
+                    cout<<"******************************************************************************************************************"<<endl;
                     break;
                 }
             }
