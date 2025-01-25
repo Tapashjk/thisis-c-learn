@@ -2,6 +2,8 @@
 
 #include <iostream>
 #include <string>
+#include <cctype>
+#include <algorithm>
 using namespace std;
 
 int main() {
@@ -23,9 +25,50 @@ int main() {
         }
     
     }
-    cout<<cur_size;
+    cout<<cur_size<<endl;
+    
+    while(true){
+    
+    string user_car_input;
+    cout<<"Enter the car you want to add to car list: ";
+    cin>>user_car_input;
+    
+    //for case sensitive case;
+    transform(user_car_input.begin(),user_car_input.end(),user_car_input.begin(),::tolower);
+
+    //if ujser inputs exit;
+    if (user_car_input=="exit"){
+        cout<<"Good bye";
+        break;
+    }
+
+
+//suppose iw ant to add item in the array
+    if (user_car_input=="add"){
+        if(cur_size<maz_size){
+            string car_add;
+            cout<<"Enter the brand of the car you want to add :";
+            cin>>car_add;
+            getline(cin,user_car_input);
+            transform(car_add.begin(),car_add.end(),car_add.begin(),::tolower);
+
+            cars[cur_size]=car_add;
+            cur_size++;
+            cout<<"updated sucess fully"<<endl;
+             cout<<"***************This is the updated list of car******************* "<<endl;
+              for(int i=0 ; i<cur_size ; i++){
+                 cout<<i+1<<". "<<cars[i]<<endl;
+                 
+             }
+             break;
+        }
+    }else{
+        cout<<"Typo Error";
+        continue;
+    }
+    }
+    
+
+
 }
-
-
-
 
