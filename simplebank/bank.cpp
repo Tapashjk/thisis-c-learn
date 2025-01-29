@@ -3,13 +3,13 @@
 
 using namespace std;
 
-// MySQL connection details
+// MySQL Database Credentials
 const char* HOST = "localhost";
 const char* USER = "root";     
 const char* PASSWORD = "123456789";  
 const char* DATABASE = "bank_db";
 
-// Function to connect to MySQL
+// Connect to MySQL Database
 MYSQL* connectToDatabase() {
     MYSQL* conn = mysql_init(NULL);
     if (!conn) {
@@ -53,7 +53,7 @@ private:
         return nullptr;
     }
 
-    // Check Account Balance
+    // Get Account Balance
     double getBalance(int accNumber) {
         string query = "SELECT balance FROM accounts WHERE account_number = " + to_string(accNumber);
         MYSQL_ROW row = fetchRow(query);
@@ -74,6 +74,7 @@ public:
     // Deposit Money
     void depositMoney(int accNumber, double amount) {
         if (executeQuery("UPDATE accounts SET balance = balance + " + to_string(amount) + " WHERE account_number = " + to_string(accNumber))) {
+            executeQuery("INSERT INTO transactions (account_number, transaction_type, amount) VALUES (" + to_string(accNumber) + ", 'Deposit', " + to_string(amount) + ")");
             cout << "Deposit Successful!" << endl;
         }
     }
@@ -91,6 +92,7 @@ public:
         }
 
         if (executeQuery("UPDATE accounts SET balance = balance - " + to_string(amount) + " WHERE account_number = " + to_string(accNumber))) {
+            executeQuery("INSERT INTO transactions (account_number, transaction_type, amount) VALUES (" + to_string(accNumber) + ", 'Withdrawal', " + to_string(amount) + ")");
             cout << "Withdrawal Successful!" << endl;
         }
     }
@@ -124,6 +126,22 @@ public:
         }
     }
 
+    // View Transaction History
+    void viewTransactions(int accNumber) {
+        string query = "SELECT * FROM transactions WHERE account_number = " + to_string(accNumber);
+        if (mysql_query(conn, query.c_str()) == 0) {
+            MYSQL_RES* res = mysql_store_result(conn);
+            MYSQL_ROW row;
+            cout << "Transaction History:\n";
+            while ((row = mysql_fetch_row(res))) {
+                cout << "Transaction ID: " << row[0] << ", Type: " << row[2] << ", Amount: $" << row[3] << ", Date: " << row[4] << endl;
+            }
+            mysql_free_result(res);
+        } else {
+            cout << "No Transactions Found!" << endl;
+        }
+    }
+
     ~BankingSystem() { mysql_close(conn); }
 };
 
@@ -136,7 +154,7 @@ int main() {
 
     while (true) {
         cout << "\n===== BANKING SYSTEM =====\n";
-        cout << "1. Create Account\n2. Deposit Money\n3. Withdraw Money\n4. Transfer Money\n5. View Account\n6. Exit\n";
+        cout << "1. Create Account\n2. Deposit Money\n3. Withdraw Money\n4. Transfer Money\n5. View Account\n6. View Transactions\n7. Exit\n";
         cout << "Enter choice: ";
         cin >> choice;
 
@@ -149,7 +167,6 @@ int main() {
                 cin >> amount;
                 bank.createAccount(name, amount);
                 break;
-
             case 2:
                 cout << "Enter Account Number: ";
                 cin >> accNum;
@@ -157,7 +174,6 @@ int main() {
                 cin >> amount;
                 bank.depositMoney(accNum, amount);
                 break;
-
             case 3:
                 cout << "Enter Account Number: ";
                 cin >> accNum;
@@ -165,28 +181,29 @@ int main() {
                 cin >> amount;
                 bank.withdrawMoney(accNum, amount);
                 break;
-
             case 4:
                 int toAcc;
-                cout << "Enter From Account Number: ";
+                cout << "Enter From Account: ";
                 cin >> accNum;
-                cout << "Enter To Account Number: ";
+                cout << "Enter To Account: ";
                 cin >> toAcc;
-                cout << "Enter Transfer Amount: ";
+                cout << "Enter Amount: ";
                 cin >> amount;
                 bank.transferMoney(accNum, toAcc, amount);
                 break;
-
             case 5:
                 cout << "Enter Account Number: ";
                 cin >> accNum;
                 bank.viewAccount(accNum);
                 break;
-
             case 6:
+                cout << "Enter Account Number: ";
+                cin >> accNum;
+                bank.viewTransactions(accNum);
+                break;
+            case 7:
                 cout << "Exiting System..." << endl;
                 return 0;
-
             default:
                 cout << "Invalid Choice!" << endl;
         }
