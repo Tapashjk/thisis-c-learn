@@ -1,6 +1,5 @@
 #include <iostream>
-#include <mysql/mysql.h>
-
+#include <jdbc.h>
 using namespace std;
 
 // MySQL Database Credentials
@@ -8,6 +7,7 @@ const char* HOST = "localhost";
 const char* USER = "root";     
 const char* PASSWORD = "123456789";  
 const char* DATABASE = "bank_db";
+const unsigned int PORT = 3306;
 
 // Connect to MySQL Database
 MYSQL* connectToDatabase() {
