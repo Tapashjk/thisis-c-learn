@@ -1,5 +1,5 @@
 #include <iostream>
-#include <jdbc.h>
+#include <mysql/mysql.h>
 using namespace std;
 
 // MySQL Database Credentials
