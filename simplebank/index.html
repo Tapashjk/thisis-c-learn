@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio.Ai - AI Developer & Machine Learning Portfolio</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Advanced AI portfolio showcasing machine learning projects, neural network implementations, and deep learning solutions">
+    <meta name="keywords" content="AI Portfolio, Machine Learning Engineer, Deep Learning Projects, Neural Networks, NLP, Computer Vision">
+    <meta property="og:image" content="https://example.com/ai-portfolio-preview.jpg">
+    
+    <!-- Stylesheets & Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Advanced CSS with Modern Features */
+        :root {
+            --primary-ai: #6366f1;
+            --secondary-ai: #3b82f6;
+            --accent-ai: #10b981;
+            --dark-ai: #0f172a;
+            --light-ai: #f8fafc;
+            --gradient-ai: linear-gradient(135deg, var(--primary-ai) 0%, var(--secondary-ai) 50%, var(--accent-ai) 100%);
+            --neon-purple: #a855f7;
+            --neon-pink: #ec4899;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--light-ai);
+            color: var(--dark-ai);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Enhanced Header with Mobile Menu */
+        .ai-header {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(15px);
+            padding: 1.5rem 2rem;
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .nav-container {
+            max-width: 1440px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--gradient-ai);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background: var(--gradient-ai);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Comprehensive Hero Section */
+        .ai-hero {
+            min-height: 100vh;
+            padding: 12rem 2rem 6rem;
+            background: var(--dark-ai);
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 1440px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-text {
+            color: white;
+            position: relative;
+            z-index: 1;
+        }
+
+        .ai-tagline {
+            font-size: 1.25rem;
+            color: var(--accent-ai);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .ai-tagline::before {
+            content: '';
+            width: 40px;
+            height: 2px;
+            background: var(--accent-ai);
+        }
+
+        .hero-heading {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 4rem;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            background: linear-gradient(45deg, white 65%, var(--primary-ai));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subheading {
+            font-size: 1.5rem;
+            color: #94a3b8;
+            margin-bottom: 3rem;
+            max-width: 600px;
+        }
+
+        /* AI Model Visualization Canvas */
+        .ai-visualization {
+            position: relative;
+            height: 500px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .neuron-node {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--primary-ai);
+            border-radius: 50%;
+            filter: drop-shadow(0 0 5px var(--primary-ai));
+            animation: neuronPulse 2s infinite;
+        }
+
+        @keyframes neuronPulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.2); opacity: 1; }
+        }
+
+        /* Projects Showcase Section */
+        .projects-section {
+            padding: 8rem 2rem;
+            background: white;
+        }
+
+        .section-heading {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: var(--gradient-ai);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+
+        .project-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #e2e8f0;
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+        }
+
+        .project-image {
+            height: 220px;
+            background: #f1f5f9;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .project-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .project-tags {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .project-tag {
+            background: var(--light-ai);
+            color: var(--dark-ai);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* AI Skills Section */
+        .skills-section {
+            padding: 6rem 2rem;
+            background: var(--light-ai);
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+
+        .skill-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .skill-icon {
+            font-size: 2.5rem;
+            color: var(--primary-ai);
+            margin-bottom: 1rem;
+        }
+
+        .skill-progress {
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .skill-progress-bar {
+            height: 100%;
+            background: var(--gradient-ai);
+            width: 90%;
+            transition: width 0.5s ease;
+        }
+
+        /* Contact Section with Interactive Form */
+        .contact-section {
+            padding: 6rem 2rem;
+            background: var(--dark-ai);
+            color: white;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+
+        .contact-form {
+            background: rgba(255,255,255,0.05);
+            padding: 3rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-ai);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .form-submit {
+            background: var(--gradient-ai);
+            color: white;
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .form-submit:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .nav-menu {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .hero-heading {
+                font-size: 3rem;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-heading {
+                font-size: 2.5rem;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Advanced Animations */
+        @keyframes dataStream {
+            0% { transform: translateY(-100%) rotate(45deg); }
+            100% { transform: translateY(100vh) rotate(45deg); }
+        }
+
+        .ai-particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 40px;
+            background: linear-gradient(to bottom, 
+                transparent 0%,
+                var(--neon-purple) 50%,
+                transparent 100%);
+            animation: dataStream 6s linear infinite;
+            opacity: 0.5;
+        }
+
+        /* Loading Animation */
+        .ai-loader {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 4px solid var(--light-ai);
+            border-top-color: var(--primary-ai);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="ai-header">
+        <nav class="nav-container">
+            <a href="#" class="logo">Portfolio.AI</a>
+            <button class="mobile-menu-btn"><i class="fas fa-bars"></i></button>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#projects" class="nav-link">Projects</a></li>
+                <li><a href="#skills" class="nav-link">Skills</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="ai-hero" id="home">
+        <div class="ai-particles">
+            <!-- Add multiple particles with random positions -->
+        </div>
+        <div class="hero-content">
+            <div class="hero-text" data-aos="fade-up">
+                <span class="ai-tagline">AI Developer & Machine Learning Engineer</span>
+                <h1 class="hero-heading">Transforming Data Into Intelligent Solutions</h1>
+                <p class="hero-subheading">Building next-generation AI systems with neural networks, deep learning, and advanced algorithms</p>
+                <div class="hero-cta">
+                    <a href="#projects" class="cta-btn primary-cta">View Projects</a>
+                    <a href="#contact" class="cta-btn secondary-cta">Hire AI Expert</a>
+                </div>
+            </div>
+            <div class="ai-visualization" data-aos="fade-left">
+                <!-- Add neural network visualization nodes -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section class="projects-section" id="projects">
+        <div class="section-heading">
+            <h2 class="section-title">AI/ML Projects</h2>
+            <p class="section-subtitle">Implemented Machine Learning Solutions</p>
+        </div>
+        <div class="projects-grid">
+            <!-- Project 1 -->
+            <article class="project-card" data-aos="zoom-in">
+                <div class="project-image">
+                    <img src="project1.jpg" alt="Neural Network Implementation">
+                </div>
+                <div class="project-tags">
+                    <span class="project-tag">Deep Learning</span>
+                    <span class="project-tag">Python</span>
+                    <span class="project-tag">TensorFlow</span>
+                </div>
+                <h3 class="project-title">Neural Network Framework</h3>
+                <p class="project-description">Custom deep learning framework implementation with GPU acceleration</p>
+                <a href="#" class="project-link">View Case Study →</a>
+            </article>
+
+            <!-- Add more project cards -->
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section class="skills-section" id="skills">
+        <div class="section-heading">
+            <h2 class="section-title">AI Technical Stack</h2>
+            <p class="section-subtitle">Core Competencies & Expertise</p>
+        </div>
+        <div class="skills-grid">
+            <!-- Skill 1 -->
+            <div class="skill-card" data-aos="fade-up">
+                <i class="fas fa-brain skill-icon"></i>
+                <h3 class="skill-title">Deep Learning</h3>
+                <div class="skill-progress">
+                    <div class="skill-progress-bar" style="width: 95%"></div>
+                </div>
+                <p class="skill-description">TensorFlow, PyTorch, Keras</p>
+            </div>
+
+            <!-- Add more skill cards -->
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section" id="contact">
+        <div class="contact-grid">
+            <div class="contact-info" data-aos="fade-right">
+                <h2 class="section-title">Let's Build AI Solutions</h2>
+                <p class="contact-text">Reach out for consulting, projects, or AI development</p>
+                <div class="contact-details">
+                    <p><i class="fas fa-envelope"></i> contact@portfolio.ai</p>
+                    <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+                </div>
+            </div>
+            <form class="contact-form" data-aos="fade-left">
+                <div class="form-group">
+                    <input type="text" class="form-input" placeholder="Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" class="form-input" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <textarea class="form-input" rows="5" placeholder="Project Details" required></textarea>
+                </div>
+                <button type="submit" class="form-submit">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer class="ai-footer">
+        <div class="footer-container">
+            <p>&copy; 2025 Portfolio.AI. All rights reserved.</p>
+            <div class="footer-socials">
+                <a href="#"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init();
+
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.querySelector(".mobile-menu-btn");
+        const navMenu = document.querySelector(".nav-menu");
+
+        mobileMenuBtn.addEventListener("click", () => {
+            navMenu.classList.toggle("active");
+        });
+    </script>
+</body>
+</html>

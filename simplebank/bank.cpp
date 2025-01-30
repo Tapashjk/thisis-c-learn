@@ -1,211 +1,213 @@
 #include <iostream>
 #include <mysql/mysql.h>
+#include <iomanip>
+#include <sstream>
+#include <limits>
+
 using namespace std;
 
-// MySQL Database Credentials
-const char* HOST = "localhost";
-const char* USER = "root";     
-const char* PASSWORD = "123456789";  
-const char* DATABASE = "bank_db";
-const unsigned int PORT = 3306;
+// MySQL Connection Configuration
+const char* DB_HOST = "localhost";
+const char* DB_USER = "root";
+const char* DB_PASS = "123456789";
+const char* DB_NAME = "bank_db";
 
-// Connect to MySQL Database
-MYSQL* connectToDatabase() {
-    MYSQL* conn = mysql_init(NULL);
-    if (!conn) {
-        cerr << "MySQL Initialization Failed!" << endl;
+MYSQL* conn;
+MYSQL_RES* res;
+MYSQL_ROW row;
+
+// Function prototypes
+void connectDB();
+void mainMenu();
+void registerUser();
+void createAccount();
+void addAmount();
+void withdrawAmount();
+void transferAmount();
+void removeAccount();
+void displayBalance();
+string generateAccountNumber();
+
+// Database connection
+void connectDB() {
+    conn = mysql_init(NULL);
+    if (!mysql_real_connect(conn, DB_HOST, DB_USER, DB_PASS, DB_NAME, 0, NULL, 0)) {
+        cerr << "Error connecting to database: " << mysql_error(conn) << endl;
         exit(1);
     }
-
-    conn = mysql_real_connect(conn, HOST, USER, PASSWORD, DATABASE, 3306, NULL, 0);
-    if (!conn) {
-        cerr << "MySQL Connection Failed!" << endl;
-        exit(1);
-    }
-    return conn;
 }
 
-// Banking System Class
-class BankingSystem {
-private:
-    MYSQL* conn;
-
-    // Execute MySQL Query
-    bool executeQuery(const string& query) {
-        if (mysql_query(conn, query.c_str()) == 0) {
-            return true;
-        } else {
-            cerr << "MySQL Error: " << mysql_error(conn) << endl;
-            return false;
-        }
+// Generate random account number
+string generateAccountNumber() {
+    stringstream ss;
+    for(int i = 0; i < 12; i++) {
+        ss << rand() % 10;
     }
+    return ss.str();
+}
 
-    // Fetch single-row result from MySQL
-    MYSQL_ROW fetchRow(const string& query) {
-        if (mysql_query(conn, query.c_str()) == 0) {
-            MYSQL_RES* res = mysql_store_result(conn);
-            if (res) {
-                MYSQL_ROW row = mysql_fetch_row(res);
-                mysql_free_result(res);
-                return row;
-            }
-        }
-        return nullptr;
+// User registration
+void registerUser() {
+    string name, email, password;
+    
+    cout << "\nEnter name: ";
+    cin.ignore();
+    getline(cin, name);
+    
+    cout << "Enter email: ";
+    cin >> email;
+    
+    cout << "Enter password: ";
+    cin >> password;
+
+    string query = "INSERT INTO users (name, email, password) VALUES ('" + 
+                  name + "', '" + email + "', '" + password + "')";
+    
+    if(mysql_query(conn, query.c_str())) {
+        cerr << "Registration failed: " << mysql_error(conn) << endl;
+    } else {
+        cout << "Registration successful!" << endl;
     }
+}
 
-    // Get Account Balance
-    double getBalance(int accNumber) {
-        string query = "SELECT balance FROM accounts WHERE account_number = " + to_string(accNumber);
-        MYSQL_ROW row = fetchRow(query);
-        return row ? stod(row[0]) : -1;
+// Create bank account
+void createAccount() {
+    int user_id;
+    string type;
+    
+    cout << "\nEnter user ID: ";
+    cin >> user_id;
+    
+    cout << "Account type (Savings/Current): ";
+    cin >> type;
+    
+    string acc_number = generateAccountNumber();
+    
+    string query = "INSERT INTO accounts (user_id, account_number, type) VALUES (" + 
+                  to_string(user_id) + ", '" + acc_number + "', '" + type + "')";
+    
+    if(mysql_query(conn, query.c_str())) {
+        cerr << "Account creation failed: " << mysql_error(conn) << endl;
+    } else {
+        cout << "Account created successfully! Account Number: " << acc_number << endl;
     }
+}
 
-public:
-    BankingSystem() { conn = connectToDatabase(); }
-
-    // Create a new account
-    void createAccount(const string& name, double initialDeposit) {
-        string query = "INSERT INTO accounts (customer_name, balance) VALUES ('" + name + "', " + to_string(initialDeposit) + ")";
-        if (executeQuery(query)) {
-            cout << "Account created successfully!" << endl;
-        }
-    }
-
-    // Deposit Money
-    void depositMoney(int accNumber, double amount) {
-        if (executeQuery("UPDATE accounts SET balance = balance + " + to_string(amount) + " WHERE account_number = " + to_string(accNumber))) {
-            executeQuery("INSERT INTO transactions (account_number, transaction_type, amount) VALUES (" + to_string(accNumber) + ", 'Deposit', " + to_string(amount) + ")");
-            cout << "Deposit Successful!" << endl;
-        }
-    }
-
-    // Withdraw Money
-    void withdrawMoney(int accNumber, double amount) {
-        double balance = getBalance(accNumber);
-        if (balance == -1) {
-            cout << "Account Not Found!" << endl;
-            return;
-        }
-        if (balance < amount) {
-            cout << "Insufficient Balance!" << endl;
-            return;
-        }
-
-        if (executeQuery("UPDATE accounts SET balance = balance - " + to_string(amount) + " WHERE account_number = " + to_string(accNumber))) {
-            executeQuery("INSERT INTO transactions (account_number, transaction_type, amount) VALUES (" + to_string(accNumber) + ", 'Withdrawal', " + to_string(amount) + ")");
-            cout << "Withdrawal Successful!" << endl;
-        }
-    }
-
-    // Transfer Money
-    void transferMoney(int fromAcc, int toAcc, double amount) {
-        double senderBalance = getBalance(fromAcc);
-        if (senderBalance == -1) {
-            cout << "Sender Account Not Found!" << endl;
-            return;
-        }
-        if (senderBalance < amount) {
-            cout << "Insufficient Balance!" << endl;
-            return;
-        }
-
-        withdrawMoney(fromAcc, amount);
-        depositMoney(toAcc, amount);
-        cout << "Transfer Successful!" << endl;
-    }
-
-    // View Account Details
-    void viewAccount(int accNumber) {
-        string query = "SELECT * FROM accounts WHERE account_number = " + to_string(accNumber);
-        MYSQL_ROW row = fetchRow(query);
-
-        if (row) {
-            cout << "Account Number: " << row[0] << "\nCustomer Name: " << row[1] << "\nBalance: $" << row[2] << endl;
-        } else {
-            cout << "Account Not Found!" << endl;
-        }
-    }
-
-    // View Transaction History
-    void viewTransactions(int accNumber) {
-        string query = "SELECT * FROM transactions WHERE account_number = " + to_string(accNumber);
-        if (mysql_query(conn, query.c_str()) == 0) {
-            MYSQL_RES* res = mysql_store_result(conn);
-            MYSQL_ROW row;
-            cout << "Transaction History:\n";
-            while ((row = mysql_fetch_row(res))) {
-                cout << "Transaction ID: " << row[0] << ", Type: " << row[2] << ", Amount: $" << row[3] << ", Date: " << row[4] << endl;
-            }
-            mysql_free_result(res);
-        } else {
-            cout << "No Transactions Found!" << endl;
-        }
-    }
-
-    ~BankingSystem() { mysql_close(conn); }
-};
-
-// Main Function
-int main() {
-    BankingSystem bank;
-    int choice, accNum;
+// Deposit money
+void addAmount() {
+    string account_number;
     double amount;
-    string name;
+    
+    cout << "\nEnter account number: ";
+    cin >> account_number;
+    
+    cout << "Enter amount to deposit: ";
+    cin >> amount;
 
-    while (true) {
-        cout << "\n===== BANKING SYSTEM =====\n";
-        cout << "1. Create Account\n2. Deposit Money\n3. Withdraw Money\n4. Transfer Money\n5. View Account\n6. View Transactions\n7. Exit\n";
-        cout << "Enter choice: ";
+    string query = "UPDATE accounts SET balance = balance + " + to_string(amount) + 
+                  " WHERE account_number = '" + account_number + "'";
+    
+    if(mysql_query(conn, query.c_str())) {
+        cerr << "Deposit failed: " << mysql_error(conn) << endl;
+    } else {
+        // Record transaction
+        query = "INSERT INTO transactions (account_id, amount, type) "
+                "SELECT account_id, " + to_string(amount) + ", 'Deposit' "
+                "FROM accounts WHERE account_number = '" + account_number + "'";
+        mysql_query(conn, query.c_str());
+        cout << "Deposit successful!" << endl;
+    }
+}
+
+// Transfer money
+void transferAmount() {
+    string from_acc, to_acc;
+    double amount;
+    
+    cout << "\nEnter your account number: ";
+    cin >> from_acc;
+    
+    cout << "Enter recipient account number: ";
+    cin >> to_acc;
+    
+    cout << "Enter amount to transfer: ";
+    cin >> amount;
+
+    // Start transaction
+    mysql_query(conn, "START TRANSACTION");
+
+    try {
+        // Deduct from sender
+        string query = "UPDATE accounts SET balance = balance - " + to_string(amount) + 
+                      " WHERE account_number = '" + from_acc + "'";
+        if(mysql_query(conn, query.c_str())) throw exception();
+
+        // Add to receiver
+        query = "UPDATE accounts SET balance = balance + " + to_string(amount) + 
+               " WHERE account_number = '" + to_acc + "'";
+        if(mysql_query(conn, query.c_str())) throw exception();
+
+        // Record transactions
+        query = "INSERT INTO transactions (account_id, amount, type, related_account) "
+                "SELECT a.account_id, " + to_string(amount) + ", 'Transfer', b.account_id "
+                "FROM accounts a, accounts b "
+                "WHERE a.account_number = '" + from_acc + "' "
+                "AND b.account_number = '" + to_acc + "'";
+        if(mysql_query(conn, query.c_str())) throw exception();
+
+        mysql_query(conn, "COMMIT");
+        cout << "Transfer successful!" << endl;
+    } catch(...) {
+        mysql_query(conn, "ROLLBACK");
+        cerr << "Transfer failed!" << endl;
+    }
+}
+
+// Remove account
+void removeAccount() {
+    string account_number;
+    
+    cout << "\nEnter account number to delete: ";
+    cin >> account_number;
+    
+    string query = "DELETE FROM accounts WHERE account_number = '" + account_number + "'";
+    
+    if(mysql_query(conn, query.c_str())) {
+        cerr << "Account deletion failed: " << mysql_error(conn) << endl;
+    } else {
+        cout << "Account deleted successfully!" << endl;
+    }
+}
+
+// Main menu
+void mainMenu() {
+    int choice;
+    do {
+        cout << "\nBank Management System\n";
+        cout << "1. Register User\n";
+        cout << "2. Create Account\n";
+        cout << "3. Deposit Money\n";
+        cout << "4. Transfer Money\n";
+        cout << "5. Delete Account\n";
+        cout << "6. Exit\n";
+        cout << "Enter your choice: ";
         cin >> choice;
 
-        switch (choice) {
-            case 1:
-                cout << "Enter Customer Name: ";
-                cin.ignore();
-                getline(cin, name);
-                cout << "Enter Initial Deposit: ";
-                cin >> amount;
-                bank.createAccount(name, amount);
-                break;
-            case 2:
-                cout << "Enter Account Number: ";
-                cin >> accNum;
-                cout << "Enter Deposit Amount: ";
-                cin >> amount;
-                bank.depositMoney(accNum, amount);
-                break;
-            case 3:
-                cout << "Enter Account Number: ";
-                cin >> accNum;
-                cout << "Enter Withdrawal Amount: ";
-                cin >> amount;
-                bank.withdrawMoney(accNum, amount);
-                break;
-            case 4:
-                int toAcc;
-                cout << "Enter From Account: ";
-                cin >> accNum;
-                cout << "Enter To Account: ";
-                cin >> toAcc;
-                cout << "Enter Amount: ";
-                cin >> amount;
-                bank.transferMoney(accNum, toAcc, amount);
-                break;
-            case 5:
-                cout << "Enter Account Number: ";
-                cin >> accNum;
-                bank.viewAccount(accNum);
-                break;
-            case 6:
-                cout << "Enter Account Number: ";
-                cin >> accNum;
-                bank.viewTransactions(accNum);
-                break;
-            case 7:
-                cout << "Exiting System..." << endl;
-                return 0;
-            default:
-                cout << "Invalid Choice!" << endl;
+        switch(choice) {
+            case 1: registerUser(); break;
+            case 2: createAccount(); break;
+            case 3: addAmount(); break;
+            case 4: transferAmount(); break;
+            case 5: removeAccount(); break;
+            case 6: cout << "Exiting...\n"; break;
+            default: cout << "Invalid choice!\n";
         }
-    }
+    } while(choice != 6);
+}
+
+int main() {
+    connectDB();
+    mainMenu();
+    mysql_close(conn);
+    return 0;
 }
